@@ -1,4 +1,5 @@
 Code for our Paper 
+
 Alleviating Dimensional Collapse Problem in Deep Recommender Models by Designing Uniformity Layers
 
 # Run (LightGCN on ml-100k dataset)
