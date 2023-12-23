@@ -17,8 +17,6 @@ import time
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 if __name__ == '__main__':
-    # 开始时间
-    start_time=time.time()
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', '-m', type=str, default='BPR', help='name of models')
     parser.add_argument('--dataset', '-d', type=str, default='ml-100k', help='name of datasets')
@@ -26,8 +24,3 @@ if __name__ == '__main__':
     args, _ = parser.parse_known_args()
     config_file_list = args.config_files.strip().split(' ') if args.config_files else None
     run_recbole(model=args.model, dataset=args.dataset, config_file_list=config_file_list)
-    # 结束
-    end_time = time.time()
-    # 运行时间
-    run_time = end_time-start_time
-    print("程序运行时间", run_time, "s")
