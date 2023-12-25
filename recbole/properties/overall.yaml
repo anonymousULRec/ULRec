@@ -23,6 +23,7 @@ learning_rate: 0.001
 
 ULRec: Yes
 alpha: 0.9
+Equlation: 6
 
 #train_neg_sample_args: ~
 
@@ -36,7 +37,8 @@ neg_sampling:
 
 # layers
 n_layers: 2
-Tau: 0.2
+Tau: 1.0
+
 
 eval_step: 1
 stopping_step: 10
