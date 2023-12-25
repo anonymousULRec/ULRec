@@ -1,9 +1,9 @@
 Code for our Paper 
 Alleviating Dimensional Collapse Problem in Deep Recommender Models by Designing Uniformity Layers
 
-# Run (LightGCN on ml-100k dataset)
+# Run (Equlation 6: LightGCN on ml-100k dataset), Equlation=7 is for equlation 7 in this paper
 ```
-python run_recbole.py -m LightGCN -d ml-100k --n_layers=2 --gpu_id=0 --ULRec=Yes --alpha=0.9
+python run_recbole.py -m LightGCN -d ml-100k --n_layers=2 --gpu_id=0 --ULRec=Yes --Equlation=6 --alpha=0.9 
 ```
 
 # result:
