@@ -46,7 +46,7 @@ class NCL(GeneralRecommender):
         self.ssl_reg = config['ssl_reg']
         self.hyper_layers = config['hyper_layers']
 
-        self.alpha = config['alpha']
+        #self.alpha = config['alpha']
 
         self.proto_reg = config['proto_reg']
         self.k = config['num_clusters']
@@ -55,6 +55,7 @@ class NCL(GeneralRecommender):
         self.UL_Rec = config['UL_Rec']
         self.alpha = config['alpha']
         self.tau = config['Tau']
+        self.eq = config['Equlation']
 
         # define layers and loss
         self.user_embedding = torch.nn.Embedding(num_embeddings=self.n_users, embedding_dim=self.latent_dim)
@@ -262,24 +263,20 @@ class NCL(GeneralRecommender):
         embeddings_list = [all_embeddings]
         for layer_idx in range(max(self.n_layers, self.hyper_layers*2)):
             all_embeddings = torch.sparse.mm(self.norm_adj_mat, all_embeddings)
-            if self.UL_Rec == 'Yes':
+            if self.ULRec is True:
                 x = all_embeddings
-                alpha = self.alpha  # 0.8
+                alpha = self.alpha # 0.8
                 tau = self.tau  # 0.2  # 0.5
-                if tau == 0.2:
+                eq=self.equlation
+                # norm_x = nn.functional.normalize(x, dim=1)
+                # if tau == 0.2:
+                if eq == 6:
                     norm_x = nn.functional.normalize(x, dim=1)
-                    sim = norm_x @ norm_x.T / tau
+                    sim = norm_x @ norm_x.T / 0.2
                     sim = nn.functional.softmax(sim, dim=1)
                     x_neg = sim @ x
                     x = (1 + alpha) * x - alpha * x_neg
-                if tau == 0:
-                    # flow
-                    norm_x = nn.functional.normalize(x, dim=1)
-                    x_neg_d = self.Flow_UCNRec(norm_x, norm_x, norm_x)
-                    x = (1 + alpha) * x - alpha * x_neg_d
-                    # print("x",x.size())
-                if tau == 1:
-                    # flow
+                if eq == 7:
                     norm_x = nn.functional.normalize(x, dim=1)
                     x_neg_d = self.UL_Rec(norm_x, norm_x, norm_x)
                     x = (1 + alpha) * x - alpha * x_neg_d
@@ -292,7 +289,6 @@ class NCL(GeneralRecommender):
                     # x = self.LayerNorm(x)
                 # print("sim_d", x.size())
                 # exit()
-
                 all_embeddings = x
                 embeddings_list.append(all_embeddings)
             else:

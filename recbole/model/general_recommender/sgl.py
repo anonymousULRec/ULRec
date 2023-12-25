@@ -67,6 +67,7 @@ class SGL(GeneralRecommender):
         self.ULRec = config['ULRec']
         self.alpha = config['alpha']
         self.tau = config['Tau']
+        self.equlation = config['Equlation']
 
     def kernel_method(self, x):
         return torch.sigmoid(x)
@@ -286,34 +287,29 @@ class SGL(GeneralRecommender):
         else:
             for i in range(self.n_layers):
                 main_ego = torch.sparse.mm(graph, main_ego)
-                if self.ULRec == 'Yes':
+                if self.ULRec is True:
                     x = main_ego
                     alpha = self.alpha  # 0.8
-                    tau = self.tau  #
-                    if tau == 0.2:
+                    tau = self.tau  # 0.2  # 0.5
+                    eq = self.equlation
+                    # norm_x = nn.functional.normalize(x, dim=1)
+                    # if tau == 0.2:
+                    if eq == 6:
                         norm_x = nn.functional.normalize(x, dim=1)
-                        # contra-norm
-                        sim = norm_x @ norm_x.T / tau
+                        sim = norm_x @ norm_x.T / 0.2
                         sim = nn.functional.softmax(sim, dim=1)
                         x_neg = sim @ x
                         x = (1 + alpha) * x - alpha * x_neg
-                    if tau == 0:
-                        norm_x = nn.functional.normalize(x, dim=1)
-                        x_neg_d = self.Flow_UCNRec(norm_x, norm_x, norm_x)
-                        x = (1 + alpha) * x - alpha * x_neg_d
-                        # print("x",x.size())
-                    if tau == 1:
-                        # flow
+                    if eq == 7:
                         norm_x = nn.functional.normalize(x, dim=1)
                         x_neg_d = self.UL_Rec(norm_x, norm_x, norm_x)
                         x = (1 + alpha) * x - alpha * x_neg_d
                     else:
                         norm_x = nn.functional.normalize(x, dim=1)
-                        sim_d = norm_x.T @ norm_x # / 0.2
+                        sim_d = norm_x.T @ norm_x  # / 0.2
                         sim_d = nn.functional.softmax(sim_d, dim=1)
                         x_neg_d = x @ sim_d
                         x = (1 + alpha) * x - alpha * x_neg_d
-
                     main_ego = x
                     all_ego.append(main_ego)
                 else:

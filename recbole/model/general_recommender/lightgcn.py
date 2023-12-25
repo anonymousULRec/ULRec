@@ -62,6 +62,7 @@ class LightGCN(GeneralRecommender):
         self.ULRec = config['ULRec']
         self.alpha = config['alpha']
         self.tau = config['Tau']
+        self.equlation = config['Equlation']
         self.dropout = nn.Dropout(p=0.2,inplace=True)
 
         # define layers and loss
@@ -241,18 +242,20 @@ class LightGCN(GeneralRecommender):
         embeddings_list = [all_embeddings]
         for layer_idx in range(self.n_layers):
             all_embeddings = torch.sparse.mm(self.norm_adj_matrix, all_embeddings)
-            if self.ULRec == 'Yes':
+            if self.ULRec is True:
                 x = all_embeddings
                 alpha = self.alpha # 0.8
                 tau = self.tau  # 0.2  # 0.5
+                eq=self.equlation
                 # norm_x = nn.functional.normalize(x, dim=1)
-                if tau == 0.2:
+                # if tau == 0.2:
+                if eq == 6:
                     norm_x = nn.functional.normalize(x, dim=1)
-                    sim = norm_x @ norm_x.T / tau
+                    sim = norm_x @ norm_x.T / 0.2
                     sim = nn.functional.softmax(sim, dim=1)
                     x_neg = sim @ x
                     x = (1 + alpha) * x - alpha * x_neg
-                if tau == 1:
+                if eq == 7:
                     norm_x = nn.functional.normalize(x, dim=1)
                     x_neg_d = self.UL_Rec(norm_x, norm_x, norm_x)
                     x = (1 + alpha) * x - alpha * x_neg_d
